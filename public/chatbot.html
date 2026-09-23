@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Talk to Jalebi - A gentle, empathetic AI companion for your emotional wellness." />
+  <title>Jalebi Chat — AI Emotional Companion</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* LIGHT + DARK MODE VARIABLES */
+    :root {
+      --blue: #3b82f6;
+      --blue-hover: #2563eb;
+      --bg: #f4f7ff;
+      --card: #ffffff;
+      --border: #dbe4ff;
+      --text: #1b2a49;
+      --muted: #6c7a96;
+      --user-bubble: #3b82f6;
+      --user-text: #ffffff;
+      --ai-bubble: #ffffff;
+      --ai-border: #dbe4ff;
+      --ai-text: #1b2a49;
+    }
+
+    body.dark {
+      --blue: #3b82f6;
+      --blue-hover: #60a5fa;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --user-bubble: #2563eb;
+      --user-text: #ffffff;
+      --ai-bubble: #1e293b;
+      --ai-border: #334155;
+      --ai-text: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      transition: background .3s, color .3s;
+    }
+
+    /* HEADER */
+    .top {
+      background: var(--card);
+      padding: 14px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      color: var(--blue);
+      font-weight: 600;
+      font-size: 14px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: rgba(59, 130, 246, 0.08);
+      transition: background .2s ease;
+      flex-shrink: 0;
+    }
+
+    .back-btn:hover {
+      background: rgba(59, 130, 246, 0.16);
+    }
+
+    .title {
+      font-size: clamp(17px, 4vw, 22px);
+      font-weight: 700;
+      color: var(--blue);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .toggle {
+      cursor: pointer;
+      padding: 8px 14px;
+      background: var(--blue);
+      color: white;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 500;
+      user-select: none;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 38px;
+      transition: background .2s ease;
+    }
+
+    .toggle:hover {
+      filter: brightness(0.95);
+    }
+
+    /* CHAT WINDOW */
+    .chat-area {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    /* MESSAGES */
+    .msg {
+      max-width: 78%;
+      padding: 12px 18px;
+      border-radius: 18px;
+      line-height: 1.55;
+      font-size: 15px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      animation: fade .25s ease;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .me {
+      align-self: flex-end;
+      background: var(--user-bubble);
+      color: var(--user-text);
+      border-bottom-right-radius: 4px;
+    }
+
+    .ai {
+      align-self: flex-start;
+      background: var(--ai-bubble);
+      color: var(--ai-text);
+      border: 1px solid var(--ai-border);
+      border-bottom-left-radius: 4px;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      min-width: 34px;
+      min-height: 34px;
+      border-radius: 50%;
+      background: #ffd7ef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .msg-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* INPUT BAR */
+    .bottom {
+      padding: 14px 18px;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+      border-top: 1px solid var(--border);
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .bottom input {
+      flex: 1;
+      min-width: 0;
+      padding: 13px 18px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      font-size: 16px; /* 16px prevents iOS Safari auto-zoom */
+      font-family: inherit;
+      outline: none;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 48px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .bottom input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .bottom button {
+      background: var(--blue);
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 15px;
+      font-family: inherit;
+      padding: 0 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s, transform .1s;
+      touch-action: manipulation;
+      flex-shrink: 0;
+    }
+
+    .bottom button:hover {
+      background: var(--blue-hover);
+    }
+
+    .bottom button:active {
+      transform: scale(0.98);
+    }
+
+    .bottom button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .mic-btn {
+      background: #ef6cff !important;
+      border: none;
+      color: white;
+      padding: 0 16px !important;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 18px;
+      min-height: 48px;
+      min-width: 48px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mic-btn.active {
+      animation: pulse 1s infinite alternate;
+      background: #dc2626 !important;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.08); }
+    }
+
+    /* TYPING INDICATOR */
+    .typing {
+      padding: 10px 18px;
+      background: #e8eeff;
+      border-radius: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      width: max-content;
+      max-width: 80%;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      animation: fade .2s ease;
+    }
+
+    body.dark .typing {
+      background: #334155;
+    }
+
+    /* RESPONSIVE STYLING */
+    @media (max-width: 640px) {
+      .top {
+        padding: 12px 14px;
+      }
+
+      .chat-area {
+        padding: 14px 12px;
+        gap: 12px;
+      }
+
+      .msg {
+        max-width: 88%;
+        padding: 11px 14px;
+        font-size: 14.5px;
+        gap: 10px;
+      }
+
+      .bottom {
+        padding: 10px 12px;
+        padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        gap: 8px;
+      }
+
+      .bottom input {
+        padding: 11px 14px;
+      }
+
+      .bottom button {
+        padding: 0 16px;
+      }
+
+      .mic-btn {
+        padding: 0 12px !important;
+        min-width: 44px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .top {
+        padding: 10px 10px;
+      }
+
+      .title {
+        font-size: 16px;
+      }
+
+      .back-btn {
+        padding: 5px 8px;
+        font-size: 13px;
+      }
+
+      .toggle {
+        padding: 6px 10px;
+        font-size: 12px;
+        min-height: 34px;
+      }
+
+      .msg {
+        max-width: 94%;
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+
+      .avatar {
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        min-height: 30px;
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="top" role="banner">
+    <div class="header-left">
+      <a href="./index.html" class="back-btn" title="Back to Home">← Home</a>
+      <div class="title">🍥 Jalebi Chat</div>
+    </div>
+    <div class="header-actions">
+      <button class="toggle" id="themeToggle" aria-label="Toggle dark/light theme">Dark Mode</button>
+    </div>
+  </header>
+
+  <!-- CHAT AREA -->
+  <main class="chat-area" id="chat" role="log" aria-live="polite" aria-label="Chat messages history"></main>
+
+  <!-- INPUT BAR -->
+  <footer class="bottom">
+    <input id="msg" placeholder="Type your message…" aria-label="Type your message" autocomplete="off" />
+    <button class="mic-btn" id="micBtn" type="button" title="Speak message" aria-label="Voice input">🎤</button>
+    <button id="sendBtn" type="button" aria-label="Send message">Send</button>
+  </footer>
+
+  <script>
+    /* DOM ELEMENTS */
+    const chat = document.getElementById("chat");
+    const input = document.getElementById("msg");
+    const sendBtn = document.getElementById("sendBtn");
+    const micBtn = document.getElementById("micBtn");
+    const themeToggle = document.getElementById("themeToggle");
+
+    /* CHAT HISTORY (LocalStorage) */
+    const STORAGE_KEY = "jalebi_chat";
+    let history = [];
+    try {
+      history = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    } catch (e) {
+      console.warn("Could not load chat history from localStorage", e);
+      history = [];
+    }
+
+    if (history.length === 0) {
+      // Welcome message if chat is fresh
+      renderMessage("Hi there! I’m Jalebi 🍥 I’m here to listen, support, and chat with you. How are you feeling today?", "ai", false);
+    } else {
+      history.forEach(m => renderMessage(m.text, m.sender, false));
+    }
+
+    function saveHistory(text, sender) {
+      try {
+        history.push({ text, sender });
+        // Keep last 100 messages to prevent storage overflow
+        if (history.length > 100) history = history.slice(-100);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+      } catch (e) {
+        console.warn("Could not save message to localStorage", e);
+      }
+    }
+
+    /* RENDER MESSAGE */
+    function renderMessage(text, sender, save = true) {
+      const box = document.createElement("div");
+      box.className = "msg " + sender;
+
+      if (sender === "ai") {
+        const avatar = document.createElement("div");
+        avatar.className = "avatar";
+        avatar.textContent = "🍥";
+        avatar.setAttribute("aria-hidden", "true");
+        box.appendChild(avatar);
+      }
+
+      const content = document.createElement("div");
+      content.className = "msg-content";
+      content.textContent = text; // Safe text rendering prevents XSS
+
+      box.appendChild(content);
+      chat.appendChild(box);
+      chat.scrollTop = chat.scrollHeight;
+
+      if (save) {
+        saveHistory(text, sender);
+      }
+    }
+
+    /* TYPING INDICATOR */
+    function showTyping() {
+      const t = document.createElement("div");
+      t.id = "typing";
+      t.className = "typing";
+      t.textContent = "🍥 Jalebi is thinking…";
+      chat.appendChild(t);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function hideTyping() {
+      const t = document.getElementById("typing");
+      if (t) t.remove();
+    }
+
+    /* SEND MESSAGE WITH RELATIVE API URL & ROBUST ERROR HANDLING */
+    async function sendMessage() {
+      const q = input.value.trim();
+      if (!q) return;
+
+      renderMessage(q, "me");
+
+      input.value = "";
+      sendBtn.disabled = true;
+      showTyping();
+
+      try {
+        // Production relative URL: /api/search
+        const res = await fetch("/api/search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ q })
+        });
+
+        let data;
+        try {
+          data = await res.json();
+        } catch (jsonErr) {
+          console.error("Non-JSON API response received:", jsonErr);
+          throw new Error("Invalid response format from server.");
+        }
+
+        hideTyping();
+
+        if (!res.ok) {
+          // HTTP error or Gemini API error from server
+          const errorMsg = data?.error || `Server responded with status ${res.status}`;
+          console.error("API error response:", res.status, errorMsg);
+          renderMessage(`⚠️ ${errorMsg}`, "ai");
+          return;
+        }
+
+        if (!data || !data.text || !data.text.trim()) {
+          console.warn("Empty response returned from Gemini API");
+          renderMessage("I couldn't generate a response. Please try asking again.", "ai");
+          return;
+        }
+
+        renderMessage(data.text, "ai");
+
+      } catch (err) {
+        hideTyping();
+        console.error("Chat communication error:", err.message);
+
+        if (!navigator.onLine) {
+          renderMessage("You appear to be offline. Please check your internet connection.", "ai");
+        } else {
+          renderMessage("Unable to connect to Jalebi server. Please ensure the server is running.", "ai");
+        }
+      } finally {
+        sendBtn.disabled = false;
+        // Keep focus on input for seamless desktop & mobile typing
+        setTimeout(() => input.focus(), 60);
+      }
+    }
+
+    /* EVENTS */
+    sendBtn.onclick = sendMessage;
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    /* --- SPEECH RECOGNITION --- */
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recog = new SpeechRecognition();
+      recog.lang = "en-US";
+      recog.continuous = false;
+      recog.interimResults = false;
+
+      let isListening = false;
+
+      micBtn.onclick = () => {
+        if (!isListening) {
+          try {
+            recog.start();
+            micBtn.classList.add("active");
+            micBtn.textContent = "🎙️";
+            isListening = true;
+          } catch (e) {
+            console.warn("Speech recognition error on start", e);
+          }
+        } else {
+          recog.stop();
+          micBtn.classList.remove("active");
+          micBtn.textContent = "🎤";
+          isListening = false;
+        }
+      };
+
+      recog.onresult = (e) => {
+        const text = e.results[0][0].transcript;
+        input.value = text;
+        micBtn.classList.remove("active");
+        micBtn.textContent = "🎤";
+        isListening = false;
+        input.focus();
+      };
+
+      recog.onerror = (e) => {
+        console.warn("Speech recognition error:", e.error);
+        micBtn.classList.remove("active");
+        micBtn.textContent = "🎤";
+        isListening = false;
+      };
+
+      recog.onend = () => {
+        micBtn.classList.remove("active");
+        micBtn.textContent = "🎤";
+        isListening = false;
+      };
+    } else {
+      // Hide or disable mic button if SpeechRecognition is unsupported
+      micBtn.title = "Voice recognition not supported in this browser";
+      micBtn.style.opacity = "0.5";
+      micBtn.onclick = () => {
+        alert("Speech recognition is not supported in this browser.");
+      };
+    }
+
+    /* DARK MODE */
+    // Check saved preference
+    const savedTheme = localStorage.getItem("jalebi_theme");
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark");
+      themeToggle.textContent = "Light Mode";
+    }
+
+    themeToggle.onclick = () => {
+      const isDark = document.body.classList.toggle("dark");
+      themeToggle.textContent = isDark ? "Light Mode" : "Dark Mode";
+      localStorage.setItem("jalebi_theme", isDark ? "dark" : "light");
+    };
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Jalebi Journal - Reflect on your thoughts, track your emotions, and cultivate clarity." />
+  <title>Jalebi Journal — Reflect & Track Mood</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --blue: #3b82f6;
+      --blue-hover: #2563eb;
+      --bg: #f4f7ff;
+      --card: #ffffff;
+      --border: #dbe4ff;
+      --text: #1b2a49;
+      --muted: #6c7a96;
+      --shadow: 0 10px 30px rgba(31, 59, 114, .08);
+    }
+
+    body.dark {
+      --bg: #0d1225;
+      --card: #1b233a;
+      --text: #e2e8f0;
+      --border: #273147;
+      --muted: #9aa3b2;
+      --shadow: 0 10px 30px rgba(0, 0, 0, .25);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+      min-height: 100vh;
+      transition: background .3s, color .3s;
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      padding: 16px 22px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      gap: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(20px, 5vw, 26px);
+      color: var(--blue);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    a.back {
+      text-decoration: none;
+      color: var(--blue);
+      font-weight: 600;
+      font-size: 14.5px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: rgba(59, 130, 246, 0.08);
+      transition: background .2s ease;
+      white-space: nowrap;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    a.back:hover {
+      background: rgba(59, 130, 246, 0.16);
+    }
+
+    .form-section {
+      margin-top: 22px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 180px;
+      padding: 16px;
+      resize: vertical;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      font-size: 16px; /* 16px prevents mobile iOS auto-zoom */
+      font-family: inherit;
+      background: var(--card);
+      color: var(--text);
+      outline: none;
+      line-height: 1.55;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+    }
+
+    button#saveBtn {
+      margin-top: 14px;
+      padding: 13px 24px;
+      border: none;
+      background: var(--blue);
+      color: white;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 15px;
+      font-family: inherit;
+      cursor: pointer;
+      min-height: 48px;
+      transition: background .2s ease, transform .1s ease;
+      touch-action: manipulation;
+    }
+
+    button#saveBtn:hover {
+      background: var(--blue-hover);
+    }
+
+    button#saveBtn:active {
+      transform: scale(0.98);
+    }
+
+    .entries {
+      margin-top: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .entries-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: -4px;
+    }
+
+    .entry {
+      background: var(--card);
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      animation: fadeIn .25s ease;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .time {
+      color: var(--muted);
+      font-size: 12.5px;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .entry-text {
+      line-height: 1.6;
+      white-space: pre-wrap;
+      font-size: 15px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-style: italic;
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px dashed var(--border);
+    }
+
+    /* RESPONSIVE BREAKPOINTS */
+    @media (max-width: 640px) {
+      body {
+        padding: 16px 14px;
+      }
+
+      header {
+        padding: 14px 16px;
+      }
+
+      button#saveBtn {
+        width: 100%;
+      }
+
+      .entry {
+        padding: 16px 16px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      body {
+        padding: 12px 10px;
+      }
+
+      header {
+        padding: 12px 12px;
+      }
+
+      h1 {
+        font-size: 18px;
+      }
+
+      a.back {
+        padding: 6px 10px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="wrap">
+  <header role="banner">
+    <h1>📓 Jalebi Journal</h1>
+    <a href="./index.html" class="back" aria-label="Back to home page">← Back to Home</a>
+  </header>
+
+  <main class="form-section">
+    <textarea id="journalText" placeholder="Write your thoughts, feelings, or reflections here…" aria-label="Journal entry content"></textarea>
+    <button id="saveBtn" type="button">Save Entry</button>
+  </main>
+
+  <section class="entries-section" aria-label="Previous Journal Entries">
+    <div class="entries" id="entries"></div>
+  </section>
+</div>
+
+<script>
+  // Sync dark theme if set by chatbot
+  if (localStorage.getItem("jalebi_theme") === "dark") {
+    document.body.classList.add("dark");
+  }
+
+  const key = "jalebi_journal_v1";
+  let entries = [];
+  try {
+    entries = JSON.parse(localStorage.getItem(key) || "[]");
+  } catch (e) {
+    console.warn("Could not read journal entries from localStorage", e);
+    entries = [];
+  }
+
+  const box = document.getElementById("entries");
+
+  function render() {
+    box.innerHTML = "";
+
+    if (entries.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "Your journal is empty. What's on your mind today?";
+      box.appendChild(empty);
+      return;
+    }
+
+    const heading = document.createElement("div");
+    heading.className = "entries-title";
+    heading.textContent = `Your Entries (${entries.length})`;
+    box.appendChild(heading);
+
+    entries.forEach(e => {
+      const div = document.createElement("div");
+      div.className = "entry";
+
+      const timeDiv = document.createElement("div");
+      timeDiv.className = "time";
+      const dateObj = new Date(e.time);
+      timeDiv.textContent = isNaN(dateObj) ? "Earlier" : dateObj.toLocaleString();
+
+      const textDiv = document.createElement("div");
+      textDiv.className = "entry-text";
+      textDiv.textContent = e.text; // Secure from XSS: sets pure text content
+
+      div.appendChild(timeDiv);
+      div.appendChild(textDiv);
+      box.appendChild(div);
+    });
+  }
+
+  render();
+
+  document.getElementById("saveBtn").onclick = () => {
+    const inputElem = document.getElementById("journalText");
+    const text = inputElem.value.trim();
+    if (!text) return;
+
+    entries.unshift({ text, time: Date.now() });
+
+    try {
+      localStorage.setItem(key, JSON.stringify(entries));
+    } catch (e) {
+      console.warn("Could not save journal entry to localStorage", e);
+    }
+
+    inputElem.value = "";
+    render();
+  };
+</script>
+
+</body>
+</html>

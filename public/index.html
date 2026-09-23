@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Jalebi - Gentle support for your emotional journey with AI chatbot, journal, and gratitude jar." />
+  <title>Jalebi — Emotional Support & AI Companion</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #eef6ff;
+      --panel: #ffffff;
+      --accent: #1e88ff;
+      --accent-2: #b3d4ff;
+      --text: #1a2a3a;
+      --muted: #5b6b7a;
+      --shadow: 0 10px 30px rgba(0, 64, 160, .12);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at -10% -10%, var(--accent-2), transparent 60%),
+        radial-gradient(1000px 500px at 110% -10%, #d9eaff, transparent 55%),
+        var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(179, 212, 255, 0.6);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      width: 100%;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-brand span {
+      font-size: 24px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      font-weight: 500;
+      font-size: 15px;
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: background .2s ease, color .2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: #e7f1ff;
+      color: var(--accent);
+    }
+
+    .nav-toggle {
+      display: none;
+      background: transparent;
+      border: 1px solid rgba(179, 212, 255, 0.8);
+      border-radius: 10px;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--accent);
+      padding: 8px 12px;
+      line-height: 1;
+      min-height: 44px;
+      min-width: 44px;
+      transition: background .2s ease;
+    }
+
+    .nav-toggle:focus-visible {
+      outline: 2px solid var(--accent);
+    }
+
+    /* MAIN CONTAINER */
+    .app {
+      max-width: 980px;
+      width: 100%;
+      margin: 40px auto;
+      padding: 0 20px;
+      flex: 1;
+    }
+
+    /* Brand Header */
+    .brand {
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(38px, 8vw, 56px);
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.15;
+    }
+
+    .tagline {
+      margin-top: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      text-align: center;
+      font-size: clamp(14px, 3.5vw, 17px);
+      line-height: 1.4;
+      padding: 0 10px;
+    }
+
+    /* Cards */
+    .actions {
+      margin: 36px auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      max-width: 860px;
+      width: 100%;
+    }
+
+    .action {
+      background: var(--panel);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: transform .15s ease, box-shadow .15s ease;
+      min-height: 94px;
+    }
+
+    .action:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(0, 64, 160, .16);
+    }
+
+    .action h3 {
+      margin: 0 0 4px 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .action p {
+      margin: 0;
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .icon {
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent), #6bb6ff);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    /* Mascot */
+    .mascot-card {
+      margin: 28px auto;
+      max-width: 580px;
+      width: 100%;
+      background: var(--panel);
+      border-radius: var(--radius);
+      padding: 28px 26px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .mascot {
+      width: 110px;
+      height: 110px;
+      min-width: 110px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #e7f1ff, #ffffff);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .bubble {
+      background: #e9f3ff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 8px;
+      display: inline-block;
+      font-size: 15px;
+    }
+
+    .mascot-card p {
+      color: var(--muted);
+      margin: 0;
+      font-size: 14.5px;
+      line-height: 1.5;
+    }
+
+    .quote {
+      text-align: center;
+      color: var(--muted);
+      margin: 32px auto 0;
+      font-style: italic;
+      font-size: 14.5px;
+      line-height: 1.5;
+      max-width: 540px;
+      padding: 0 16px;
+    }
+
+    /* SEARCH BAR SECTION */
+    .search-area {
+      max-width: 820px;
+      width: 100%;
+      margin: 40px auto 60px;
+      text-align: center;
+    }
+
+    .search-title {
+      font-size: clamp(20px, 4vw, 24px);
+      margin-bottom: 16px;
+      color: #1f3b72;
+      font-weight: 700;
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    .search-bar input {
+      flex: 1;
+      max-width: 680px;
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid #cfe0ff;
+      border-radius: 14px;
+      outline: none;
+      font-size: 16px; /* 16px prevents mobile iOS auto-zoom */
+      font-family: inherit;
+      background: #f6f9ff;
+      color: var(--text);
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .search-bar input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+      background: #ffffff;
+    }
+
+    .search-bar button {
+      padding: 14px 24px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+      font-family: inherit;
+      background: #3b82f6;
+      color: white;
+      min-height: 48px;
+      white-space: nowrap;
+      transition: filter .15s ease, transform .1s ease;
+      touch-action: manipulation;
+    }
+
+    .search-bar button:hover {
+      filter: brightness(0.95);
+    }
+
+    .search-bar button:active {
+      transform: scale(0.98);
+    }
+
+    .search-result {
+      margin-top: 20px;
+      text-align: left;
+      background: white;
+      border: 1px solid #e6efff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 8px 28px rgba(31, 59, 114, 0.06);
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 15px;
+      display: none;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 24px 20px;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid rgba(179, 212, 255, 0.4);
+      margin-top: auto;
+    }
+
+    /* RESPONSIVE BREAKPOINTS */
+    @media (max-width: 860px) {
+      .actions {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-toggle {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.98);
+        padding: 16px 20px;
+        gap: 8px;
+        box-shadow: 0 12px 30px rgba(0, 64, 160, 0.15);
+        border-bottom: 1px solid #dbe4ff;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links a {
+        width: 100%;
+        padding: 14px 18px;
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 580px) {
+      .app {
+        margin: 24px auto;
+        padding: 0 16px;
+      }
+
+      .actions {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        margin: 28px auto;
+      }
+
+      .mascot-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 22px 18px;
+        gap: 16px;
+      }
+
+      .mascot {
+        width: 86px;
+        height: 86px;
+        min-width: 86px;
+        border-radius: 20px;
+      }
+
+      .search-bar {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .search-bar input {
+        width: 100%;
+      }
+
+      .search-bar button {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .navbar {
+        padding: 12px 16px;
+      }
+
+      .nav-brand {
+        font-size: 20px;
+      }
+
+      .app {
+        padding: 0 12px;
+      }
+
+      .action {
+        padding: 16px 14px;
+        gap: 12px;
+      }
+
+      .icon {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        font-size: 24px;
+        border-radius: 12px;
+      }
+
+      .action h3 {
+        font-size: 16.5px;
+      }
+
+      .action p {
+        font-size: 12.5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- RESPONSIVE NAVBAR -->
+  <header class="navbar" role="banner">
+    <a href="./index.html" class="nav-brand" aria-label="Jalebi Home">
+      <span>🍥</span> Jalebi
+    </a>
+
+    <button id="navToggle" class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+      ☰
+    </button>
+
+    <nav>
+      <ul id="navLinks" class="nav-links" role="navigation">
+        <li><a href="./index.html" class="active">🏠 Home</a></li>
+        <li><a href="./chatbot.html">🤖 Chatbot</a></li>
+        <li><a href="./journal.html">📓 Journal</a></li>
+        <li><a href="./gratitude.html">🌟 Gratitude</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="app">
+
+    <!-- Brand Hero -->
+    <header class="brand">
+      <h1>Jalebi</h1>
+      <div class="tagline">gentle support for your emotional journey</div>
+    </header>
+
+    <!-- Cards Section -->
+    <section class="actions" aria-label="Quick Actions">
+      <a class="action" href="./chatbot.html">
+        <div class="icon" aria-hidden="true">🤖</div>
+        <div>
+          <h3>Chatbot</h3>
+          <p>Talk freely and feel heard.</p>
+        </div>
+      </a>
+
+      <a class="action" href="./journal.html">
+        <div class="icon" aria-hidden="true">📓</div>
+        <div>
+          <h3>Journal</h3>
+          <p>Reflect and track your mood.</p>
+        </div>
+      </a>
+
+      <a class="action" href="./gratitude.html">
+        <div class="icon" aria-hidden="true">🌟</div>
+        <div>
+          <h3>Gratitude Jar</h3>
+          <p>Save small wins and bright spots.</p>
+        </div>
+      </a>
+    </section>
+
+    <!-- Mascot Section -->
+    <section class="mascot-card" aria-label="Jalebi Mascot Message">
+      <div class="mascot" aria-hidden="true">
+        <span style="font-size: 42px;">🤍</span>
+      </div>
+      <div>
+        <div class="bubble">Hi, I’m Jalebi!</div>
+        <p>
+          I’m here to listen and help you grow — one gentle step at a time.
+        </p>
+      </div>
+    </section>
+
+    <!-- Quote -->
+    <p class="quote">
+      “We see you — not just your smile, but the silence behind it too.”
+    </p>
+
+    <!-- SEARCH BAR SECTION -->
+    <section class="search-area" aria-label="Ask Jalebi Assistant">
+      <h2 class="search-title">Search with Jalebi (Gemini)</h2>
+      <form id="jalebi-search-form" class="search-bar" autocomplete="off">
+        <input id="jalebi-query" type="text" placeholder="Ask anything…" aria-label="Ask Jalebi a question" required />
+        <button id="jalebi-submit-btn" type="submit">Search</button>
+      </form>
+      <div id="jalebi-result" class="search-result" role="region" aria-live="polite"></div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Jalebi — A safe space for emotional growth & reflection.</p>
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    // Navigation toggle logic
+    const navToggle = document.getElementById("navToggle");
+    const navLinks = document.getElementById("navLinks");
+
+    navToggle.addEventListener("click", () => {
+      const isOpen = navLinks.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", isOpen);
+      navToggle.textContent = isOpen ? "✕" : "☰";
+    });
+
+    // Close mobile nav when clicking a link
+    navLinks.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        navLinks.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+        navToggle.textContent = "☰";
+      });
+    });
+
+    // Close mobile nav when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!navLinks.contains(e.target) && !navToggle.contains(e.target) && navLinks.classList.contains("open")) {
+        navLinks.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+        navToggle.textContent = "☰";
+      }
+    });
+
+    // Search Assistant with Gemini (Relative URL /api/search)
+    const form = document.getElementById("jalebi-search-form");
+    const input = document.getElementById("jalebi-query");
+    const submitBtn = document.getElementById("jalebi-submit-btn");
+    const box = document.getElementById("jalebi-result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const q = input.value.trim();
+      if (!q) return;
+
+      input.value = "";
+      input.blur();
+
+      box.style.display = "block";
+      box.textContent = "Thinking…";
+      submitBtn.disabled = true;
+
+      try {
+        // Relative API URL for production deployment
+        const res = await fetch("/api/search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ q })
+        });
+
+        let data;
+        try {
+          data = await res.json();
+        } catch (jsonErr) {
+          throw new Error("Invalid response format received from server.");
+        }
+
+        if (!res.ok) {
+          const errMsg = data?.error || `Server responded with status ${res.status}`;
+          box.textContent = `Error: ${errMsg}`;
+        } else if (!data?.text) {
+          box.textContent = "No response generated. Please try again.";
+        } else {
+          box.textContent = `You: ${q}\n\nJalebi: ${data.text}`;
+        }
+
+        setTimeout(() => input.focus(), 80);
+
+      } catch (err) {
+        if (!navigator.onLine) {
+          box.textContent = "You appear to be offline. Please check your internet connection.";
+        } else {
+          box.textContent = "Could not reach Jalebi server. Please ensure the server is running.";
+        }
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>
