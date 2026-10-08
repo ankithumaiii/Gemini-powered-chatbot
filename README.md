@@ -1,5 +1,7 @@
 # 🍥 Jalebi — Gentle Emotional Support & AI Companion
 
+🤖 **Live Demo:** [Try Jalebi](https://your-chatbot.onrender.com)
+
 Jalebi is a compassionate emotional companion web application designed to support mental wellness through AI-powered conversations, mindful journaling, and daily gratitude tracking.
 
 ---
